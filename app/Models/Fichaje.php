@@ -16,14 +16,20 @@ class Fichaje extends Model
     protected $fillable = [
         'personal_id',
         'tipo',
+        'contabiliza',
         'fecha_hora',
         'observacion',
+    ];
+
+    protected $attributes = [
+        'contabiliza' => true,
     ];
 
     protected function casts(): array
     {
         return [
             'tipo' => TipoFichaje::class,
+            'contabiliza' => 'boolean',
             'fecha_hora' => 'datetime',
         ];
     }

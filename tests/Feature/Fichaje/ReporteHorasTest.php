@@ -10,11 +10,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-function marcar(Personal $personal, TipoFichaje $tipo, string $fechaHora, ?string $observacion = null): void
+function marcar(Personal $personal, TipoFichaje $tipo, string $fechaHora, ?string $observacion = null, bool $contabiliza = true): void
 {
     Fichaje::create([
         'personal_id' => $personal->id,
         'tipo' => $tipo,
+        'contabiliza' => $contabiliza,
         'fecha_hora' => Carbon::parse($fechaHora),
         'observacion' => $observacion,
     ]);
@@ -45,6 +46,62 @@ it('sums multiple pairs in the same day and ignores a trailing orphan entrada', 
 
     // 4h (14400) + 3h30m15s (12615) = 27015; orphan ignored
     expect($segundos)->toBe(27015);
+});
+
+it('excludes non-contabiliza punches from worked seconds but pairs the rest', function () {
+    $personal = Personal::factory()->create();
+
+    // A full entrada/salida pair flagged as not-controlled: must count as 0.
+    marcar($personal, TipoFichaje::Entrada, '2026-07-10 17:26:48', null, contabiliza: false);
+    marcar($personal, TipoFichaje::Salida, '2026-07-10 21:28:16', null, contabiliza: false);
+
+    $segundos = app(ReporteHoras::class)->segundosTrabajados($personal, Carbon::parse('2026-07-10'));
+
+    expect($segundos)->toBe(0);
+});
+
+it('reproduces the legacy edge: a stray non-contabiliza entrada is dropped before pairing', function () {
+    $personal = Personal::factory()->create();
+
+    // Mirrors Estalder 2026-05-29: an uncontrolled entrada at 15:34, then a
+    // controlled 11-second pair. Legacy counts exactly 11 seconds.
+    marcar($personal, TipoFichaje::Entrada, '2026-05-29 15:34:59', null, contabiliza: false);
+    marcar($personal, TipoFichaje::Entrada, '2026-05-29 18:17:45');
+    marcar($personal, TipoFichaje::Salida, '2026-05-29 18:17:56');
+
+    $segundos = app(ReporteHoras::class)->segundosTrabajados($personal, Carbon::parse('2026-05-29'));
+
+    expect($segundos)->toBe(11);
+});
+
+it('keeps non-contabiliza punches visible as invalid rows in the detail', function () {
+    $personal = Personal::factory()->create();
+
+    marcar($personal, TipoFichaje::Entrada, '2026-07-10 17:26:48', null, contabiliza: false);
+    marcar($personal, TipoFichaje::Salida, '2026-07-10 21:28:16', null, contabiliza: false);
+
+    $pares = app(ReporteHoras::class)->pares($personal, 7, 2026);
+
+    // Both punches are shown, both marked not-closed (red), none counted.
+    expect($pares)->toHaveCount(2)
+        ->and($pares[0]['cerrado'])->toBeFalse()
+        ->and($pares[1]['cerrado'])->toBeFalse();
+});
+
+it('omits days without counted hours from the daily breakdown', function () {
+    $personal = Personal::factory()->create();
+
+    // Day 10: counted pair (2h). Day 11: only uncounted punches -> hidden.
+    marcar($personal, TipoFichaje::Entrada, '2026-07-10 08:00:00');
+    marcar($personal, TipoFichaje::Salida, '2026-07-10 10:00:00');
+    marcar($personal, TipoFichaje::Entrada, '2026-07-11 08:00:00', null, contabiliza: false);
+    marcar($personal, TipoFichaje::Salida, '2026-07-11 12:00:00', null, contabiliza: false);
+
+    $detalle = app(ReporteHoras::class)->detallePorDia($personal, 7, 2026);
+
+    expect($detalle)->toHaveCount(1)
+        ->and($detalle[0]['fecha']->toDateString())->toBe('2026-07-10')
+        ->and($detalle[0]['segundos'])->toBe(7200);
 });
 
 it('splits the month into quincenas and keeps the invariant mensual == 1ra + 2da', function () {

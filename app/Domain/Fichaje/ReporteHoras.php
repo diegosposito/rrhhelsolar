@@ -75,6 +75,15 @@ class ReporteHoras
         $detalle = [];
 
         foreach ($this->fichajesDelMesPorDia($personal, $mes, $anio) as $fecha => $fichajesDia) {
+            $segundos = $this->segundosDePares($this->paresDelDia($fichajesDia));
+
+            // Only days with counted worked time appear in the breakdown, like
+            // the legacy "Horas Trabajadas" table. Uncounted movement still shows
+            // in the entrada/salida detail below it.
+            if ($segundos === 0) {
+                continue;
+            }
+
             $observaciones = $fichajesDia
                 ->map(fn (Fichaje $f): string => trim((string) $f->observacion))
                 ->filter(fn (string $obs): bool => $obs !== '')
@@ -82,7 +91,7 @@ class ReporteHoras
 
             $detalle[] = [
                 'fecha' => Carbon::parse($fecha),
-                'segundos' => $this->segundosDePares($this->paresDelDia($fichajesDia)),
+                'segundos' => $segundos,
                 'observaciones' => $observaciones,
             ];
         }
@@ -160,6 +169,15 @@ class ReporteHoras
         $entradaAbierta = null;
 
         foreach ($fichajesDia as $fichaje) {
+            // Punches not flagged for control never contribute worked time; they
+            // are surfaced as an invalid/open row so the detail still shows them
+            // (matches the legacy report, where controlar=0 punches appear red).
+            if (! $fichaje->contabiliza) {
+                $pares[] = ['ingreso' => $fichaje->fecha_hora, 'egreso' => null, 'cerrado' => false];
+
+                continue;
+            }
+
             if ($fichaje->tipo === TipoFichaje::Entrada) {
                 // A previous unpaired entrada becomes an orphan open pair.
                 if ($entradaAbierta !== null) {

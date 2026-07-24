@@ -19,6 +19,7 @@ class FichajeFactory extends Factory
         return [
             'personal_id' => Personal::factory(),
             'tipo' => TipoFichaje::Entrada,
+            'contabiliza' => true,
             'fecha_hora' => now(),
             'observacion' => null,
         ];
@@ -27,5 +28,10 @@ class FichajeFactory extends Factory
     public function salida(): static
     {
         return $this->state(fn (array $attributes) => ['tipo' => TipoFichaje::Salida]);
+    }
+
+    public function noContabiliza(): static
+    {
+        return $this->state(fn (array $attributes) => ['contabiliza' => false]);
     }
 }
