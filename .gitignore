@@ -1,0 +1,34 @@
+# --- Project-specific ignores (preserve) ---
+referencia/
+# Local AI runtime state
+.atl/
+
+# --- Laravel standard ignores ---
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.env.*
+!.env.example
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+node_modules/
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+vendor/
+Homestead.json
+Homestead.yaml
+Thumbs.db
