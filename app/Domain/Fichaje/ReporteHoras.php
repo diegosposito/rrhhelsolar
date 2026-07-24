@@ -19,6 +19,8 @@ use Illuminate\Support\Collection;
  */
 class ReporteHoras
 {
+    public function __construct(private readonly Quincenas $quincenas) {}
+
     /**
      * Worked seconds for a single day (sum of closed pairs, to the second).
      */
@@ -36,22 +38,26 @@ class ReporteHoras
     /**
      * Monthly worked seconds split into fortnights.
      *
-     * Days 1-15 are the first fortnight; day 16 to the end of month is the
-     * second. Invariant: mensual === primeraQuincena + segundaQuincena.
+     * The fortnight boundaries come from the period's PeriodoQuincena config
+     * (falling back to day 1-15 / 16-end when the period is unconfigured). The
+     * ranges tile the whole month, so the invariant holds:
+     * mensual === primeraQuincena + segundaQuincena.
      *
      * @return array{mensual: int, primeraQuincena: int, segundaQuincena: int}
      */
     public function resumenMensual(Personal $personal, int $mes, int $anio): array
     {
+        $rangos = $this->quincenas->rangos($mes, $anio);
         $primera = 0;
         $segunda = 0;
 
         foreach ($this->fichajesDelMesPorDia($personal, $mes, $anio) as $fecha => $fichajesDia) {
             $segundos = $this->segundosDePares($this->paresDelDia($fichajesDia));
+            $dia = Carbon::parse($fecha);
 
-            if (Carbon::parse($fecha)->day <= 15) {
+            if ($dia->gte($rangos['primera'][0]) && $dia->lte($rangos['primera'][1])) {
                 $primera += $segundos;
-            } else {
+            } elseif ($dia->gte($rangos['segunda'][0]) && $dia->lte($rangos['segunda'][1])) {
                 $segunda += $segundos;
             }
         }
