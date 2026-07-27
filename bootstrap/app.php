@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureAdminAccess;
+use App\Http\Middleware\EnsureKioskAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,8 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'kiosk' => App\Http\Middleware\EnsureKioskAccess::class,
-            'admin.access' => App\Http\Middleware\EnsureAdminAccess::class,
+            'kiosk' => EnsureKioskAccess::class,
+            'admin.access' => EnsureAdminAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

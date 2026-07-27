@@ -123,6 +123,7 @@ class MigrarLegacy extends Command
             $dni = $this->normalizeDni((string) $row->nrodoc);
             if ($dni === '') {
                 $skippedBlank++;
+
                 continue;
             }
             $byDni[$dni][] = $row;
@@ -227,6 +228,7 @@ class MigrarLegacy extends Command
                     $personalId = $personaMap[(int) $row->idpersona] ?? null;
                     if ($personalId === null) {
                         $orphans++;
+
                         continue;
                     }
                     $buffer[] = [
