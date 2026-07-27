@@ -8,9 +8,12 @@
                     Obtener Información
                 </x-filament::button>
 
+                {{-- Bind the URL (":href") instead of interpolating it: the Filament
+                     button escapes the href itself, so "{{ }}" would double-escape the
+                     "&" separators and drop every query parameter after the first. --}}
                 <x-filament::button
                     tag="a"
-                    href="{{ $this->resumenPdfUrl }}"
+                    :href="$this->resumenPdfUrl"
                     color="gray"
                     icon="heroicon-m-printer"
                     target="_blank"

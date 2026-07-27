@@ -10,20 +10,21 @@
             </div>
             <div class="rounded-xl bg-gray-50 p-4 dark:bg-white/5">
                 <div class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Total Primer Quincena</div>
-                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalPrimera }}</div>
-            </div>
+                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalPrimera }}</div>            </div>
             <div class="rounded-xl bg-gray-50 p-4 dark:bg-white/5">
                 <div class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Total Segunda Quincena</div>
-                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalSegunda }}</div>
-            </div>
+                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalSegunda }}</div>            </div>
         </div>
 
         <div class="mt-6 flex flex-wrap items-center gap-3">
-            <x-filament::button tag="a" href="{{ $volverUrl }}" color="gray" icon="heroicon-m-arrow-left">
+            {{-- Bind the URLs (":href") instead of interpolating them: the Filament
+                 button escapes the href itself, so "{{ }}" would double-escape the
+                 "&" separators and drop every query parameter after the first. --}}
+            <x-filament::button tag="a" :href="$volverUrl" color="gray" icon="heroicon-m-arrow-left">
                 Volver al listado
             </x-filament::button>
 
-            <x-filament::button tag="a" href="{{ $detallePdfUrl }}" color="primary" icon="heroicon-m-printer" target="_blank">
+            <x-filament::button tag="a" :href="$detallePdfUrl" color="primary" icon="heroicon-m-printer" target="_blank">
                 Imprimir Detalle
             </x-filament::button>
         </div>
