@@ -28,6 +28,7 @@
         }
         .totales .lbl { font-size: 9px; text-transform: uppercase; color: #6b7280; }
         .totales .val { font-size: 15px; font-weight: bold; color: #a10a6b; }
+        .totales .rango { font-size: 9px; color: #6b7280; margin-top: 2px; }
         h2 { font-size: 12px; color: #a10a6b; margin: 18px 0 4px; }
         table.data { width: 100%; border-collapse: collapse; margin-top: 6px; }
         table.data th {
@@ -50,6 +51,8 @@
         <h1>Detalle de Horas Trabajadas</h1>
         <div class="meta"><strong>Persona:</strong> {{ $personaNombre }}</div>
         <div class="meta"><strong>Período informado:</strong> {{ $periodo }}</div>
+        <div class="meta"><strong>Primera quincena:</strong> {{ $rangoPrimera }}</div>
+        <div class="meta"><strong>Segunda quincena:</strong> {{ $rangoSegunda }}</div>
     </div>
 
     <table class="totales">
@@ -61,10 +64,12 @@
             <td>
                 <div class="lbl">Total Primer Quincena</div>
                 <div class="val">{{ $totalPrimera }}</div>
+                <div class="rango">{{ $rangoPrimera }}</div>
             </td>
             <td>
                 <div class="lbl">Total Segunda Quincena</div>
                 <div class="val">{{ $totalSegunda }}</div>
+                <div class="rango">{{ $rangoSegunda }}</div>
             </td>
         </tr>
     </table>

@@ -2,6 +2,7 @@
 
 use App\Filament\Pages\DetalleHorasTrabajadas;
 use App\Filament\Pages\GestionHorasTrabajadas;
+use App\Models\PeriodoQuincena;
 use App\Models\Personal;
 use App\Models\Role;
 use App\Models\User;
@@ -112,6 +113,22 @@ it('renders the detail PDF link with single-escaped query separators', function 
 
     expect($html)->not->toContain('&amp;amp;')
         ->and($html)->toContain("detalle.pdf?personal={$persona->id}&amp;mes=5&amp;anio=2026");
+});
+
+it('shows the configured fortnight ranges in the detail header', function () {
+    $admin = makeReportUser('admin', true);
+    $persona = Personal::factory()->create();
+    PeriodoQuincena::factory()->periodo(2026, 7, 17)->create();
+
+    $this->actingAs($admin)
+        ->get(DetalleHorasTrabajadas::getUrl([
+            'personal' => $persona->id,
+            'mes' => 7,
+            'anio' => 2026,
+        ]))
+        ->assertSuccessful()
+        ->assertSee('01/07/2026 al 17/07/2026')
+        ->assertSee('18/07/2026 al 31/07/2026');
 });
 
 it('redirects a guest away from the PDF routes', function () {

@@ -1,7 +1,11 @@
 <x-filament-panels::page>
     <x-filament::section>
         <x-slot name="heading">{{ $personaNombre }}</x-slot>
-        <x-slot name="description">Período informado: {{ $periodo }}</x-slot>
+        <x-slot name="description">
+            Período informado: {{ $periodo }} &middot;
+            Primera quincena: {{ $rangoPrimera }} &middot;
+            Segunda quincena: {{ $rangoSegunda }}
+        </x-slot>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div class="rounded-xl bg-primary-50 p-4 dark:bg-primary-500/10">
@@ -10,10 +14,14 @@
             </div>
             <div class="rounded-xl bg-gray-50 p-4 dark:bg-white/5">
                 <div class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Total Primer Quincena</div>
-                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalPrimera }}</div>            </div>
+                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalPrimera }}</div>
+                <div class="mt-1 text-xs tabular-nums text-gray-500 dark:text-gray-400">{{ $rangoPrimera }}</div>
+            </div>
             <div class="rounded-xl bg-gray-50 p-4 dark:bg-white/5">
                 <div class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Total Segunda Quincena</div>
-                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalSegunda }}</div>            </div>
+                <div class="mt-1 text-2xl font-bold tabular-nums text-gray-950 dark:text-white">{{ $totalSegunda }}</div>
+                <div class="mt-1 text-xs tabular-nums text-gray-500 dark:text-gray-400">{{ $rangoSegunda }}</div>
+            </div>
         </div>
 
         <div class="mt-6 flex flex-wrap items-center gap-3">

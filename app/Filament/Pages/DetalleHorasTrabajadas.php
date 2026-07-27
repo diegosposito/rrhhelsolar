@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Domain\Fichaje\Quincenas;
 use App\Domain\Fichaje\ReporteHoras;
 use App\Models\Personal;
 use App\Support\Duracion;
@@ -50,6 +51,7 @@ class DetalleHorasTrabajadas extends Page
         $reporte = app(ReporteHoras::class);
 
         $resumen = $reporte->resumenMensual($persona, $this->mes, $this->anio);
+        $quincenas = app(Quincenas::class)->etiquetas($this->mes, $this->anio);
 
         $dias = collect($reporte->detallePorDia($persona, $this->mes, $this->anio))
             ->map(fn (array $fila): array => [
@@ -71,6 +73,8 @@ class DetalleHorasTrabajadas extends Page
         return [
             'personaNombre' => "{$persona->apellido}, {$persona->nombre}",
             'periodo' => Meses::periodo($this->mes, $this->anio),
+            'rangoPrimera' => $quincenas['primera'],
+            'rangoSegunda' => $quincenas['segunda'],
             'totalMensual' => Duracion::hms($resumen['mensual']),
             'totalPrimera' => Duracion::hms($resumen['primeraQuincena']),
             'totalSegunda' => Duracion::hms($resumen['segundaQuincena']),

@@ -40,6 +40,23 @@ class Quincenas
     }
 
     /**
+     * Human labels for the period's fortnight ranges, e.g. "01/07/2026 al
+     * 17/07/2026". Built from the same resolved ranges the totals use, so an
+     * unconfigured period shows its 1-15 / 16-end fallback.
+     *
+     * @return array{primera: string, segunda: string}
+     */
+    public function etiquetas(int $mes, int $anio): array
+    {
+        $rangos = $this->rangos($mes, $anio);
+
+        return [
+            'primera' => $this->etiqueta($rangos['primera']),
+            'segunda' => $this->etiqueta($rangos['segunda']),
+        ];
+    }
+
+    /**
      * Whether the period can be configured: only the current month/year.
      */
     public function esEditable(int $mes, int $anio): bool
@@ -88,6 +105,14 @@ class Quincenas
             'segunda_inicio' => $corte->copy()->addDay()->toDateString(),
             'segunda_fin' => $inicio->copy()->endOfMonth()->toDateString(),
         ];
+    }
+
+    /**
+     * @param  array{0: Carbon, 1: Carbon}  $rango
+     */
+    private function etiqueta(array $rango): string
+    {
+        return $rango[0]->format('d/m/Y').' al '.$rango[1]->format('d/m/Y');
     }
 
     /**

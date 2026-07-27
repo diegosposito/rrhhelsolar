@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Fichaje\Quincenas;
 use App\Domain\Fichaje\ReporteHoras;
 use App\Models\Personal;
 use App\Support\Duracion;
@@ -18,7 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HorasPdfController extends Controller
 {
-    public function __construct(private readonly ReporteHoras $reporte) {}
+    public function __construct(
+        private readonly ReporteHoras $reporte,
+        private readonly Quincenas $quincenas,
+    ) {}
 
     /**
      * Monthly summary across every employee with movements.
@@ -60,6 +64,7 @@ class HorasPdfController extends Controller
         $persona = Personal::findOrFail((int) $request->integer('personal'));
 
         $resumen = $this->reporte->resumenMensual($persona, $mes, $anio);
+        $quincenas = $this->quincenas->etiquetas($mes, $anio);
 
         $dias = collect($this->reporte->detallePorDia($persona, $mes, $anio))
             ->map(fn (array $fila): array => [
@@ -81,6 +86,8 @@ class HorasPdfController extends Controller
         $pdf = Pdf::loadView('pdf.detalle-horas', [
             'personaNombre' => "{$persona->apellido}, {$persona->nombre}",
             'periodo' => Meses::periodo($mes, $anio),
+            'rangoPrimera' => $quincenas['primera'],
+            'rangoSegunda' => $quincenas['segunda'],
             'totalMensual' => Duracion::hms($resumen['mensual']),
             'totalPrimera' => Duracion::hms($resumen['primeraQuincena']),
             'totalSegunda' => Duracion::hms($resumen['segundaQuincena']),

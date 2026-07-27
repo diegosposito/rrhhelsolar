@@ -84,6 +84,23 @@ it('derives full-coverage contiguous dates and clamps an out-of-range cut', func
     ]);
 });
 
+it('labels the fortnight ranges from the configured period, else the fallback', function () {
+    $quincenas = app(Quincenas::class);
+
+    // Unconfigured period -> 1-15 / 16-end fallback.
+    expect($quincenas->etiquetas(7, 2026))->toBe([
+        'primera' => '01/07/2026 al 15/07/2026',
+        'segunda' => '16/07/2026 al 31/07/2026',
+    ]);
+
+    PeriodoQuincena::factory()->periodo(2026, 7, 17)->create();
+
+    expect($quincenas->etiquetas(7, 2026))->toBe([
+        'primera' => '01/07/2026 al 17/07/2026',
+        'segunda' => '18/07/2026 al 31/07/2026',
+    ]);
+});
+
 it('only allows configuring the current period, not past nor future', function () {
     Carbon::setTestNow('2026-07-24 12:00:00');
     $quincenas = app(Quincenas::class);
