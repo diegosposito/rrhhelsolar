@@ -7,16 +7,16 @@
         * { font-family: DejaVu Sans, sans-serif; }
         body { color: #1f2937; font-size: 11px; }
         .brand {
-            border-bottom: 3px solid #a10a6b;
+            border-bottom: 3px solid #F527EE;
             padding-bottom: 10px;
             margin-bottom: 14px;
         }
-        .brand-name { color: #a10a6b; font-size: 18px; font-weight: bold; }
+        .brand-name { color: #F527EE; font-size: 18px; font-weight: bold; }
         .brand-sun {
             display: inline-block;
             width: 16px; height: 16px;
             border-radius: 50%;
-            background: #a10a6b;
+            background: #F527EE;
             vertical-align: middle;
             margin-right: 6px;
         }
@@ -27,12 +27,12 @@
             padding: 8px 10px; border: 1px solid #e5e7eb; width: 33%;
         }
         .totales .lbl { font-size: 9px; text-transform: uppercase; color: #6b7280; }
-        .totales .val { font-size: 15px; font-weight: bold; color: #a10a6b; }
+        .totales .val { font-size: 15px; font-weight: bold; color: #F527EE; }
         .totales .rango { font-size: 9px; color: #6b7280; margin-top: 2px; }
-        h2 { font-size: 12px; color: #a10a6b; margin: 18px 0 4px; }
+        h2 { font-size: 12px; color: #F527EE; margin: 18px 0 4px; }
         table.data { width: 100%; border-collapse: collapse; margin-top: 6px; }
         table.data th {
-            background: #a10a6b; color: #ffffff; text-align: left;
+            background: #F527EE; color: #ffffff; text-align: left;
             padding: 5px 8px; font-size: 10px;
         }
         table.data td { padding: 5px 8px; border-bottom: 1px solid #e5e7eb; }

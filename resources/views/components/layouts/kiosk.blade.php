@@ -9,8 +9,8 @@
     @livewireStyles
     <style>
         :root {
-            --brand: #a10a6b;
-            --brand-dark: #7d0853;
+            --brand: #F527EE;
+            --brand-dark: #BF1EB9;
             --brand-soft: #f7e6f1;
             --ink: #1f2430;
             --muted: #6b7280;

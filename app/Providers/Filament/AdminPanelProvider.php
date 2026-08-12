@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/sol-elsolar.svg'))
             ->colors([
                 // El Solar Uruguay magenta/fuchsia brand color.
-                'primary' => Color::hex('#a10a6b'),
+                'primary' => Color::hex('#F527EE'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

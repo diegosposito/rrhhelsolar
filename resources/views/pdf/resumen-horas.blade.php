@@ -7,23 +7,23 @@
         * { font-family: DejaVu Sans, sans-serif; }
         body { color: #1f2937; font-size: 11px; }
         .brand {
-            border-bottom: 3px solid #a10a6b;
+            border-bottom: 3px solid #F527EE;
             padding-bottom: 10px;
             margin-bottom: 16px;
         }
-        .brand-name { color: #a10a6b; font-size: 18px; font-weight: bold; }
+        .brand-name { color: #F527EE; font-size: 18px; font-weight: bold; }
         .brand-sun {
             display: inline-block;
             width: 16px; height: 16px;
             border-radius: 50%;
-            background: #a10a6b;
+            background: #F527EE;
             vertical-align: middle;
             margin-right: 6px;
         }
         h1 { font-size: 14px; color: #111827; margin: 4px 0 0; }
         table { width: 100%; border-collapse: collapse; margin-top: 12px; }
         th {
-            background: #a10a6b; color: #ffffff; text-align: left;
+            background: #F527EE; color: #ffffff; text-align: left;
             padding: 6px 8px; font-size: 11px;
         }
         td { padding: 6px 8px; border-bottom: 1px solid #e5e7eb; }
