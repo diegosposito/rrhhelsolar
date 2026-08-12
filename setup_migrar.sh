@@ -10,10 +10,12 @@ cd "$(dirname "$0")"
 # escriba como root en el árbol del proyecto.
 export UID_HOST=1000
 export GID_HOST=1000
-export WEB_PORT=8090
+# Respeta lo que ya venga del entorno o del .env; si no, usa el puerto local
+# estándar del proyecto.
+export WEB_PORT="${WEB_PORT:-8082}"
 DC="docker compose"
 
-echo "==> 1/7  Build + up del stack (nginx :$WEB_PORT, MySQL :3307)"
+echo "==> 1/7  Build + up del stack (nginx :$WEB_PORT, MySQL :${DB_HOST_PORT:-3306})"
 # UID es una variable readonly en bash; se pasa vía env para el build args.
 env UID="$UID_HOST" GID="$GID_HOST" WEB_PORT="$WEB_PORT" $DC up -d --build
 
