@@ -21,7 +21,8 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "${WEB_PORT:-8080}:80"
+      # Local port. The production overlay removes this publish; the proxy fronts it.
+      - "${WEB_PORT:-8082}:80"
     volumes:
       - ./:/var/www/html
       - ./docker/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -39,7 +40,16 @@ services:
       MYSQL_PASSWORD: rrhh
       MYSQL_ROOT_PASSWORD: rootsecret
     ports:
-      - "3307:3306"
+      # Atado a 127.0.0.1 a propósito: la base queda accesible desde el propio
+      # servidor (por SSH, o por túnel SSH con un cliente gráfico) pero NUNCA
+      # desde internet. Sin el prefijo, Docker publica en 0.0.0.0 y expone la
+      # base al mundo, y ufw no lo impide porque Docker escribe sus reglas en
+      # iptables por debajo del firewall.
+      #
+      # DB_HOST_PORT, no DB_PORT: en el .env de Laravel DB_PORT es el puerto con
+      # el que la app se conecta a la base por la red interna (siempre 3306).
+      # Reutilizar ese nombre acá rompería la conexión al cambiar el publish.
+      - "127.0.0.1:${DB_HOST_PORT:-3306}:3306"
     volumes:
       - dbdata:/var/lib/mysql
     healthcheck:

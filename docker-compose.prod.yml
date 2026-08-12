@@ -1,0 +1,35 @@
+# Production overlay — rrhh.elsolaruruguay.com.ar
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Requires the proxy stack (dockers/nginxproxy) to be running first, since it
+# owns the proxy-net network.
+
+services:
+  web:
+    environment:
+      VIRTUAL_HOST: rrhh.elsolaruruguay.com.ar
+      VIRTUAL_PORT: 80
+      LETSENCRYPT_HOST: rrhh.elsolaruruguay.com.ar
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL:?set LETSENCRYPT_EMAIL in .env}
+    # The proxy is the only entry point; no host port is published.
+    ports: !reset []
+    networks:
+      - rrhh
+      - proxy-net
+
+  app:
+    environment:
+      # Must be https so Laravel and Filament build correct absolute URLs.
+      # Paired with trustProxies(at: '*') in bootstrap/app.php.
+      APP_URL: https://rrhh.elsolaruruguay.com.ar
+      APP_ENV: production
+      APP_DEBUG: "false"
+
+  # `db` no se toca: el compose base ya lo publica atado a 127.0.0.1, así que
+  # es alcanzable desde el propio servidor (o por túnel SSH) pero no desde
+  # internet. La aplicación lo alcanza por la red privada `rrhh`.
+
+networks:
+  proxy-net:
+    external: true
