@@ -1,6 +1,6 @@
 # RRHH El Sol - Laravel 12 + Filament 3 app image
 # Base: PHP 8.3 FPM (Debian bookworm for reliable extension builds)
-FROM php:8.3-fpm-bookworm
+FROM php:8.3.37-fpm-bookworm
 
 # System packages and PHP extensions required by Laravel 12 + Filament 3.
 # Uses mlocati/docker-php-extension-installer for reproducible extension builds.

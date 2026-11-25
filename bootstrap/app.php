@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureKioskAccess;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,7 +21,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // plus mixed-content failures in Filament.
         // Trusting all proxies is safe because the container publishes no host
         // port in production: the proxy is its only possible client.
-        $middleware->trustProxies(at: '*');
+        // Only these headers are trusted: nginx-proxy passes X-Forwarded-Host,
+        // X-Forwarded-Port and X-Forwarded-Prefix through from the client, so
+        // trusting them would let anyone alter the generated URLs. The host
+        // and port come from the Host header, which nginx-proxy sets itself.
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO,
+        );
 
         $middleware->alias([
             'kiosk' => EnsureKioskAccess::class,
